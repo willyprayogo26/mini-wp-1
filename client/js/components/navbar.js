@@ -12,6 +12,12 @@ Vue.component('navbar', {
         getLoginForm() {
             this.$emit('get-login-form')
         },
+        getAllArticle() {
+            this.$emit("get-all-article")
+        },
+        getMyArticle() {
+            this.$emit("get-my-article")
+        },
         signOut() {
             if(this.isgoogle === true) {
                 var auth2 = gapi.auth2.getAuthInstance();
@@ -33,10 +39,10 @@ Vue.component('navbar', {
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li v-if="islogin === true" class="nav-item active">
-                    <a onclick="getProject()" class="nav-link text-white" href="#">All Article</a>
+                    <a @click="getAllArticle" class="nav-link text-white" href="#">All Article</a>
                 </li>
                 <li v-if="islogin === true" class="nav-item active">
-                    <a onclick="getTodo()" class="nav-link text-white" href="#">My Article</a>
+                    <a @click="getMyArticle" class="nav-link text-white" href="#">My Article</a>
                 </li>
             </ul>
             <a v-if="islogin === false" id="btn-regis" href="#" @click="getRegisForm" class="m-2 text-white">Register</a>

@@ -40,9 +40,12 @@ class ArticleController {
     }
 
     static createArticle (req, res) {
+        console.log('----cont');
+        
         Article.create({
             ...req.body,
-            author: req.user.id
+            author: req.user.id,
+            pictureUrl: req.file.cloudStoragePublicUrl
         })
         .then(article => {
             res.status(201).json(article)
@@ -66,7 +69,8 @@ class ArticleController {
         Article.findOneAndUpdate({
             _id: req.params.articleId
         }, {
-            ...req.body
+            ...req.body,
+            pictureUrl: req.file.cloudStoragePublicUrl
         }, {
             new: true
         })

@@ -30,6 +30,12 @@ var app = new Vue({
             this.isLogin = true
             this.position = 'content'
             this.name = localStorage.getItem('name')
+        },
+        getAllArticle() {
+            this.position = 'allArticle'
+        },
+        getMyArticle() {
+            this.position = 'myArticle'
         }
     }
 })
