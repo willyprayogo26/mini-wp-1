@@ -1,4 +1,5 @@
-const baseUrl = 'http://localhost:3000'
+// const baseUrl = 'http://localhost:3000'
+const baseUrl = 'http://portfoly-server.willyprayogo26.xyz'
 
 var app = new Vue({
     el: '#app',

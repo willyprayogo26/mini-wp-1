@@ -1,13 +1,16 @@
 const { User } = require('../models')
 const { bcrypt, jwt } = require('../helpers')
 const { OAuth2Client } = require('google-auth-library')
-const CLIENT_ID = "280167018459-0ekh5bdr1l75uvr23cbig5un04vq54r1.apps.googleusercontent.com"
+// const CLIENT_ID = "280167018459-0ekh5bdr1l75uvr23cbig5un04vq54r1.apps.googleusercontent.com"
+const CLIENT_ID = "280167018459-tsknk29al9m355nqa9d0rtno9b4gmjt5.apps.googleusercontent.com"
 const client = new OAuth2Client(CLIENT_ID)
 
 class userController {
     static registerAdmin (req, res) {
         User.create({
-            ...req.body,
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
             role: 'admin'
         })
         .then(user => {
@@ -34,7 +37,9 @@ class userController {
 
     static register (req, res) {
         User.create({
-            ...req.body,
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
             role: 'user'
         })
         .then(user => {
@@ -116,7 +121,10 @@ class userController {
 
     static createUser (req, res) {
         User.create({
-            ...req.body
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            role: 'user'
         })
         .then(user => {
             res.status(201).json(user)
@@ -144,7 +152,9 @@ class userController {
         User.findOneAndUpdate({
             _id: req.params.id
         }, {
-            ...req.body
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password
         }, {
             new: true
         })

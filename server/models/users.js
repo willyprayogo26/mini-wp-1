@@ -46,7 +46,6 @@ const userSchema = new Schema ({
             message: 'Password must contain at least one letter, one number, and minimum six characters'
         }
     },
-    profilePicture: String,
     role: String
 }, {
     timestamps: {}
