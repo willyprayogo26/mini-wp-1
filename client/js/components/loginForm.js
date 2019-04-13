@@ -36,30 +36,25 @@ Vue.component('login-form', {
                     })
                 })
         },
-        onSignIn(googleUser) {
-            if (!localStorage.getItem('token')) {
-                const id_token = googleUser.getAuthResponse().id_token
-                axios
-                    .post(`${baseUrl}/google-login`, {
-                        token: id_token
-                    })
-                    .then(({ data }) => {
-                        localStorage.setItem('token', data.token)
-                        localStorage.setItem('id', data.id)
-                        localStorage.setItem('name', data.name)
-                        localStorage.setItem('email', data.email)
-
-                        const profile = googleUser.getBasicProfile()
-                        this.profileImg = profile.getImageUrl()
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-            }
-        }
+        toLoginGoogle(googleUser) {
+            const token = googleUser.getAuthResponse().id_token
+            axios
+                .post(`${baseUrl}/google-login`, { token: token })
+                .then(({ data }) => {
+                    localStorage.setItem('token', data.token)
+                    localStorage.setItem('id', data.id)
+                    localStorage.setItem('name', data.name)
+                    localStorage.setItem('email', data.email)
+                    
+                    this.$emit('get-content')
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
     },
     template: `
-    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto" data-aos="zoom-out-down" data-aos-duration="3000">
         <div class="card card-signin my-5">
             <div class="card-body">
                 <h5 class="card-title text-center">Sign In</h5>
@@ -76,9 +71,7 @@ Vue.component('login-form', {
     
                     <button class="btn btn-lg btn-block text-uppercase text-white" type="submit" style="background: #ffc100;">Sign In</button>
                     <hr class="my-4">
-                    <div class="d-flex justify-content-center">
-                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                    </div>
+                    <g-signin-button v-on:done="toLoginGoogle"/>
                 </form>
             </div>
         </div>

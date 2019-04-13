@@ -1,7 +1,7 @@
 const { Tag } = require('../models')
 
 class TagController {
-    static read(req, res) {
+    static getAllTag(req, res) {
         Tag.find({})
             .then(tags => {
                 if (tags) {
@@ -16,7 +16,6 @@ class TagController {
                 res.status(500).json(err)
             })
     }
-
 }
 
 module.exports = TagController

@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer')
 
 module.exports = {
-    Mailer: (Email) => {
+    Mailer: (email, message) => {
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -11,10 +11,10 @@ module.exports = {
         });
 
         var mailOptions = {
-            from: Email.ownerEmail,
-            to: Email.targetEmail,
-            subject: `Project Invitation`,
-            text: `${Email.ownerEmail} invite you to join this Project`
+            from: process.env.EMAIL,
+            to: email,
+            subject: `Week information`,
+            text: message
         };
 
         transporter.sendMail(mailOptions, function (error, info) {

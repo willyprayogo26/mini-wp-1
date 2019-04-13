@@ -6,7 +6,8 @@ var app = new Vue({
         isLogin: false,
         isGoogle: false,
         position: 'login',
-        name: ''
+        name: '',
+        search: ''
     },
     created() {
         if (localStorage.getItem('token')) {
@@ -28,7 +29,7 @@ var app = new Vue({
         },
         getContent() {
             this.isLogin = true
-            this.position = 'content'
+            this.position = 'allArticle'
             this.name = localStorage.getItem('name')
         },
         getAllArticle() {
@@ -36,6 +37,14 @@ var app = new Vue({
         },
         getMyArticle() {
             this.position = 'myArticle'
+            this.search = ''
+        },
+        getAllTag() {
+            this.position = 'allTag'
+        },
+        getArticleByTag(tagName) {
+            this.position = 'allTag'
+            this.search = tagName
         }
     }
 })

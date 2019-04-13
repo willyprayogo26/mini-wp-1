@@ -1,10 +1,10 @@
 const { Article } = require('../models')
+const { helperTag } = require('../helpers')
 
 class ArticleController {
     static getAllArticle (req, res) {
         Article.find({})
         .populate('author')
-        .populate('tags')
         .then(articles => {
             res.status(200).json(articles)
         })
@@ -18,7 +18,6 @@ class ArticleController {
             author: req.user.id
         })
         .populate('author')
-        .populate('tags')
         .then(articles => {
             res.status(200).json(articles)
         })
@@ -39,13 +38,27 @@ class ArticleController {
         })
     }
 
+    static getArticleByTag (req, res) {
+        Article.find({
+            tags: req.params.tagName
+        })
+        .then(tags => {
+            res.status(200).json(tags)
+        })
+        .catch(err => {
+            res.status(500).json(err)
+        })
+    }
+
     static createArticle (req, res) {
-        console.log('----cont');
+        let temp = helperTag.checkTag(req.body.allTag)
         
         Article.create({
             ...req.body,
             author: req.user.id,
-            pictureUrl: req.file.cloudStoragePublicUrl
+            pictureUrl: req.file ? req.file.cloudStoragePublicUrl : "https://blkbekasi.kemnaker.go.id/subbagiankeuangan/assets-back-end/dist/img/image-not-available.png",
+            tags: temp,
+            views: 0
         })
         .then(article => {
             res.status(201).json(article)
@@ -66,13 +79,21 @@ class ArticleController {
     }
 
     static updateArticle (req, res) {
-        Article.findOneAndUpdate({
+        let temp = helperTag.checkTag(req.body.allTag)
+
+        Article.findOne({
             _id: req.params.articleId
-        }, {
-            ...req.body,
-            pictureUrl: req.file.cloudStoragePublicUrl
-        }, {
-            new: true
+        })
+        .then(article => {
+            return Article.findOneAndUpdate({
+                _id: req.params.articleId
+            }, {
+                ...req.body,
+                pictureUrl: req.file ? req.file.cloudStoragePublicUrl : article.pictureUrl,
+                tags: temp
+            }, {
+                new: true
+            })
         })
         .then(article => {
             if(article) {
@@ -106,6 +127,47 @@ class ArticleController {
         .catch(err => {
             res.status(500).json(err)
         })
+    }
+
+    static voteArticle (req, res) {
+        let status = req.body.status;
+        let vote = null;
+        status === 'upvote' ? vote = 1 : vote = -1;
+        let articleId = req.params.articleId;
+        let userId = req.user.id
+        Article.findById(articleId)
+            .then(article => {
+                if (article) {
+                    let index = article.votes.findIndex(v => {
+                        return v.userId.toString() === userId.toString();
+                    })
+                    if (index < 0) {
+                        article.votes.push({
+                            userId: userId,
+                            status: vote
+                        })
+                    } else {
+                        if (article.votes[index].status == vote) {
+                            article.votes = article.votes.filter(v => {
+                                return v.userId.toString() != userId.toString();
+                            })
+                        } else {
+                            article.votes[index].status = vote;
+                        }
+                    }
+                    article.save();
+                    res.status(200).json(article)
+                } else {
+                    res.status(400).json({
+                        message: 'Wrong article Id'
+                    })
+                }
+            })
+            .catch(err => {
+                res.status(500).json({
+                    message: error.message
+                })
+            })
     }
 }
 

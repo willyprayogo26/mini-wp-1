@@ -16,9 +16,18 @@ const articleSchema = new Schema ({
     },
     pictureUrl: String,
     tags: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Tag'
+        type: String
     }],
+    views: Number,
+    votes: [
+        {
+            userId: {
+                type: 'ObjectId',
+                ref: 'Vote'
+            },
+            status: Number
+        }
+    ],
 }, {
     timestamps: {}
 })
